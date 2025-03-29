@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Zyntra</string>
+    <string name="navigation_drawer_open">Opening Menu</string>
+    <string name="navigation_drawer_close">Closing Menu</string>
+    <string name="random_text_post">Perfect! That gives you the green light to build the Social Connect app using Java and Android Studio.
+
+You can now follow the same roadmap, just in native Android. Heres a breakdown of how you can approach it:</string>
+</resources>

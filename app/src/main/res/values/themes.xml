@@ -1,0 +1,23 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.Zyntra" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary colors -->
+        <item name="colorPrimary">@color/honolulu_blue</item>
+        <item name="colorOnPrimary">@color/ghost_white</item>
+        <item name="colorPrimaryContainer">@color/royal_blue</item>
+
+        <!-- Secondary/Accent -->
+        <item name="colorSecondary">@color/cerise</item>
+        <item name="colorOnSecondary">@color/ghost_white</item>
+
+        <!-- Background & Surface -->
+        <item name="android:colorBackground">@color/backgroundLight</item>
+        <item name="colorSurface">@color/ghost_white</item>
+        <item name="colorOnSurface">@color/eerie_black</item>
+
+        <!-- Text -->
+        <item name="android:textColor">@color/textPrimary</item>
+
+        <!-- Others -->
+        <item name="android:windowBackground">@color/backgroundLight</item>
+    </style>
+</resources>

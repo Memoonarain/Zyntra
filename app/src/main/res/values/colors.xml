@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="honolulu_blue">#007cbe</color>
+    <color name="royal_blue">#0a2463</color>
+    <color name="ghost_white">#fffaff</color>
+    <color name="light_grey">#D9D2D9</color>
+    <color name="grey">#BDB6BD</color>
+    <color name="cerise">#d8315b</color>
+    <color name="eerie_black">#1e1b18</color>
+
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <!-- Custom Tokens -->
+    <color name="colorPrimary">@color/honolulu_blue</color>
+    <color name="colorPrimaryDark">@color/royal_blue</color>
+    <color name="colorAccent">@color/cerise</color>
+    <color name="backgroundLight">@color/ghost_white</color>
+    <color name="textPrimary">@color/eerie_black</color>
+</resources>
