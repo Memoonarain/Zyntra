@@ -36,6 +36,7 @@ public class ProfileUpdateActivity extends AppCompatActivity {
     Uri imageUri;
     ProgressDialog progressDialog;
 
+    LoadingDialogue loadingDialogues;
     FirebaseAuth mAuth;
     FirebaseFirestore db;
     FirebaseStorage storage;
@@ -48,12 +49,18 @@ public class ProfileUpdateActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_update);
+        setContentView(R.layout.activity_profile_update);try {
+            MediaManager.get(); // Try to get instance
+        } catch (IllegalStateException e) {
+            // Not initialized yet, so initialize now
             Map<String, String> config = new HashMap<>();
             config.put("cloud_name", "du3kpasqd");
             config.put("api_key", "978589238943688");
             config.put("api_secret", "UBV5lxDjn_56OlOQM1CfU8-D2uU");
             MediaManager.init(this, config);
+        }
+
+        loadingDialogues =new LoadingDialogue(ProfileUpdateActivity.this);
         edtBio = findViewById(R.id.edtBio);
         edtEmail = findViewById(R.id.edtEmailLogin);
         edtFirstName = findViewById(R.id.edtFirstName);
@@ -140,6 +147,7 @@ public class ProfileUpdateActivity extends AppCompatActivity {
         String userEmail="";
         if (currentUser != null) {
              userEmail = currentUser.getEmail();
+
             // You can now use userEmail as needed
         } else {
             // User not signed in

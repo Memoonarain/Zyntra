@@ -76,7 +76,17 @@ public class SignUpActivity extends AppCompatActivity {
         btnSignupView = findViewById(R.id.btnSignupView);
         mAuth = FirebaseAuth.getInstance();
         progressBar = new ProgressBar(this);
-        progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);try {
+            MediaManager.get(); // Try to get instance
+        } catch (IllegalStateException e) {
+            // Not initialized yet, so initialize now
+            Map<String, String> config = new HashMap<>();
+            config.put("cloud_name", "du3kpasqd");
+            config.put("api_key", "978589238943688");
+            config.put("api_secret", "UBV5lxDjn_56OlOQM1CfU8-D2uU");
+            MediaManager.init(this, config);
+        }
+
     }
 
     private void setupListeners() {

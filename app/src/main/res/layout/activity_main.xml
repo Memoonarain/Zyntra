@@ -11,6 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         android:orientation="vertical">
 
         <!-- Toolbar -->
@@ -42,6 +43,7 @@
 
             <!-- Stories RecyclerView -->
             <androidx.recyclerview.widget.RecyclerView
+                android:visibility="gone"
                 android:id="@+id/rvHomeStories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,7 +57,7 @@
                 android:id="@+id/rvHomeFeed"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="80dp"
+                android:layout_marginTop="20dp"
                 tools:listitem="@layout/user_post"
                 android:paddingBottom="60dp"
                 android:clipToPadding="false" />

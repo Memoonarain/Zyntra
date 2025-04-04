@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewPost">
+    tools:context=".EditPostActivity">
+
 
     <TextView
         android:id="@+id/txtCreatePost"
@@ -25,11 +26,10 @@
         android:id="@+id/btnPost"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Post"
+        android:text="Update"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <de.hdodenhof.circleimageview.CircleImageView
-        android:visibility="gone"
         android:layout_margin="20dp"
         android:id="@+id/imgUserImg"
         android:layout_width="50dp"
@@ -39,8 +39,6 @@
         app:layout_constraintTop_toBottomOf="@id/txtCreatePost" />
 
     <TextView
-        android:visibility="gone"
-        android:layout_margin="20dp"
         android:id="@+id/txtUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
