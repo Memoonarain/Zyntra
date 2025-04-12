@@ -11,12 +11,13 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/imageViewDrawer"
         android:layout_width="100dp"
         android:layout_height="100dp"
         app:srcCompat="@drawable/icon_profile" />
 
     <TextView
+        android:id="@+id/txtUserDrawer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text=" Jack Elson"
@@ -24,7 +25,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/txtEmailDrawer"
         android:layout_width="wrap_content"
         android:textColor="@color/colorPrimary"
         android:layout_height="wrap_content"

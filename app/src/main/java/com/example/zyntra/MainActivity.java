@@ -3,6 +3,9 @@ package com.example.zyntra;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -16,6 +19,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -56,21 +60,23 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
 
-                    // Get the FCM token
+                    // Get new FCM token
                     String token = task.getResult();
-                    Log.d("FCM", "FCM Token: " + token);
+                    Log.e("FCM", "New FCM Token: " + token);
 
-                    // Save this token to Firestore under the user's profile
+                    // Save token to Firestore
                     FirebaseFirestore.getInstance()
-                            .collection("Users")
-                            .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .update("fcmToken", token);
+                            .collection("users")
+                            .document(FirebaseAuth.getInstance().getUid())
+                            .update("fcmToken", token)
+                            .addOnSuccessListener(aVoid -> Log.e("FCM", "Token updated successfully"))
+                            .addOnFailureListener(e -> Log.e("FCM", "Failed to update token", e));
                 });
+
 
         DrawerLayout drawerLayout = findViewById(R.id.main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -93,6 +99,35 @@ public class MainActivity extends AppCompatActivity {
 
             drawerLayout.closeDrawers();
             return true;
+        });
+
+        View headerView = navigationView.getHeaderView(0);
+
+// Access views in header layout
+        ImageView imageView = headerView.findViewById(R.id.imageViewDrawer);
+        TextView nameTextView = headerView.findViewById(R.id.txtUserDrawer);
+        TextView emailTextView = headerView.findViewById(R.id.txtEmailDrawer);
+        db = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        String uid = auth.getCurrentUser().getUid();
+
+        db.collection("users").document(uid).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                String firstName = documentSnapshot.getString("firstName");
+                String lastName = documentSnapshot.getString("lastName");
+                String fullName = (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+                String imageUrl = documentSnapshot.getString("profileImageUrl");
+                String email = documentSnapshot.getString("email");
+                nameTextView.setText(fullName);
+                emailTextView.setText(email);
+                if (imageUrl != null && !imageUrl.isEmpty()) {
+                    Glide.with(this)
+                            .load(imageUrl)
+                            .placeholder(R.drawable.icon_profile)
+                            .into(imageView);
+                }
+            }
         });
 
         rvHomeFeed = findViewById(R.id.rvHomeFeed);

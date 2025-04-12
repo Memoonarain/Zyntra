@@ -73,6 +73,7 @@ public class ActivitySearch extends AppCompatActivity {
                         }
                     }
                     if (found) {
+                        postAdapter.notifyDataSetChanged();
                         Toast.makeText(this, "Matching Search Result Found!", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, "No Matching Search Result!", Toast.LENGTH_SHORT).show();

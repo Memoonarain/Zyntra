@@ -19,17 +19,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +31,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
-
+    String fullName = "Unkown User";
     private Context context;
     private List<Post> postList;
 
@@ -59,36 +53,34 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         holder.txtUserName.setText(post.getUserName());
         holder.txtPostTime.setText(DateFormat.format("dd MMM yyyy", post.getTimestamp().toDate()));
-
         holder.txtReadmore.setVisibility(View.GONE);
-
         holder.txtPostText.setMaxLines(3);
         holder.txtPostText.setEllipsize(TextUtils.TruncateAt.END);
         holder.txtPostText.setText(post.getPostText());
 
-// Ensure text measurement completes before checking
-        holder.txtPostText.post(() -> {
-            holder.txtPostText.measure(
-                    View.MeasureSpec.makeMeasureSpec(holder.txtPostText.getWidth(), View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-            );
-
-            int lineCount = holder.txtPostText.getLineCount();
-            Log.d("ReadMoreCheck", "Line Count: " + lineCount + " | Text: " + post.getPostText());
-
-            if (lineCount > 3) {
-                holder.txtReadmore.setVisibility(View.VISIBLE);
-            } else {
-                holder.txtReadmore.setVisibility(View.GONE);
-            }
-        });
         if (post.getUserId().equals(FirebaseAuth.getInstance().getUid())) {
             holder.btnOptions.setVisibility(View.VISIBLE);
-        } else {
+        }
+        else {
             holder.btnOptions.setVisibility(View.GONE);
         }
         isPostLiked(post, holder.btnLike);
 
+        holder.imgUserImg.setOnClickListener(v -> {
+                Log.w("Checking data", post.getPostId());
+                openUserProfile(post);
+        });
+        holder.txtUserName.setOnClickListener(v -> openUserProfile(post));
+        holder.txtPostText.setOnClickListener(v ->  {
+            Intent intent = new Intent(context, PostActivity.class);
+            intent.putExtra("postId", post.getPostId());
+            context.startActivity(intent);
+        });
+        holder.postImageContent.setOnClickListener(v -> {
+            Intent intent = new Intent(context, PostActivity.class);
+            intent.putExtra("postId", post.getPostId());
+            context.startActivity(intent);
+        });
         holder.btnLike.setOnClickListener(v -> {
             String userId = FirebaseAuth.getInstance().getUid();
             FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -115,19 +107,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                     .collection("likes")
                                     .document(userId)
                                     .set(new Like(FirebaseAuth.getInstance().getUid(), System.currentTimeMillis()))
-                                    .addOnSuccessListener(unused -> {sendNotification(context, userId, "New Like", "Someone liked your post!");
+                                    .addOnSuccessListener(unused -> { sendLikeNotification(post);
                                         holder.btnLike.setImageResource(R.drawable.icon_liked);
                                     });
                         }
                     });
         });
-
         holder.btnComment.setOnClickListener(v -> {
             Intent intent = new Intent(context, PostActivity.class);
             intent.putExtra("postId", post.getPostId());
             context.startActivity(intent);
         });
-
         holder.btnShare.setOnClickListener(v -> {
             String shareText = post.getPostText();
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
@@ -135,7 +125,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             shareIntent.putExtra(Intent.EXTRA_TEXT, shareText);
             context.startActivity(Intent.createChooser(shareIntent, "Share post via"));
         });
-
         holder.btnOptions.setOnClickListener(v -> {
             PopupMenu popupMenu = new PopupMenu(context, holder.btnOptions);
             popupMenu.getMenuInflater().inflate(R.menu.menu_post_options, popupMenu.getMenu());
@@ -179,34 +168,63 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
             popupMenu.show();
         });
-
-
         Glide.with(context).load(post.getUserImageUrl()).placeholder(R.drawable.icon_profile).into(holder.imgUserImg);
-
         if (post.getPostImageUrl() != null && !post.getPostImageUrl().isEmpty()) {
             holder.postImageContent.setVisibility(View.VISIBLE);
             Glide.with(context).load(post.getPostImageUrl()).placeholder(R.drawable.icon_image_loading).into(holder.postImageContent);
-        } else {
+        }
+        else {
             holder.postImageContent.setVisibility(View.GONE);
         }
+    }
 
-        if (post.getPostVideoUrl() != null && !post.getPostVideoUrl().isEmpty()) {
-            holder.postVideoContent.setVisibility(View.VISIBLE);
-            holder.postVideoContent.setVideoPath(post.getPostVideoUrl());
-            holder.postVideoContent.seekTo(1); // Show preview frame
-        } else {
-            holder.postVideoContent.setVisibility(View.GONE);
-        }holder.txtReadmore.setOnClickListener(v -> {
-            Intent intent = new Intent(context, PostActivity.class);
-            intent.putExtra("postId", post.getPostId());
+    private void openUserProfile(Post post) {
+                    Intent intent = new Intent(context, UserProfileActivity.class);
+            intent.putExtra("UserId", post.getUserId());
             context.startActivity(intent);
-        });
+    }
 
+    private void sendLikeNotification(Post post) {
+        // Fetch the FCM token of the post owner
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("Posts").document(post.getPostId()).get()
+                .addOnSuccessListener(postSnapshot -> {
+                    if (postSnapshot.exists()) {
+                        String ownerId = postSnapshot.getString("userId");
+                        if (!ownerId.equals(FirebaseAuth.getInstance().getUid())) {
+
+                            db.collection("users").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).get()
+                                    .addOnSuccessListener(documentSnapshot -> {
+
+                                        String firstName = documentSnapshot.getString("firstName");
+                                        String lastName = documentSnapshot.getString("lastName");
+                                        Log.e("error name check", firstName+lastName+ " ");
+
+                                        fullName = (firstName != null ? firstName : "") +
+                                                (lastName != null ? " " + lastName : "");
+                                    });
+                            if (fullName.isEmpty()) fullName = "Unknown User";
+                            db.collection("users").document(ownerId).get()
+                                    .addOnSuccessListener(userSnapshot -> {
+                                        String token = userSnapshot.getString("fcmToken");
+                                        if (token != null && !token.isEmpty()) {
+                                            NotificationModel notification = new NotificationModel(
+                                                    fullName+ " liked your post",
+                                                    post.getPostId(),
+                                                    ownerId,
+                                                    FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                                    "New Like",
+                                                    "like",
+                                                    token
+                                            );
+                                            FcmPushNotification.saveAndPushNotification(context, notification);
+                                        }
+                                    });
+                        }
+                    }
+                });
     }
-    public void updateList(List<Post> newList) {
-        postList = newList;
-        notifyDataSetChanged();
-    }
+
     @Override
     public int getItemCount() {
         return postList.size();
@@ -226,53 +244,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     }
                 });
     }
-    public static void sendNotification(Context context, String userId, String title, String message) {
-        FirebaseFirestore.getInstance().collection("Users").document(userId)
-                .get().addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists() && documentSnapshot.contains("fcmToken")) {
-                        String fcmToken = documentSnapshot.getString("fcmToken");
-                        if (fcmToken != null) {
-                            sendFCMMessage(context, fcmToken, title, message);
-                        }
-                    }
-                });
-    }
-
-    private static void sendFCMMessage(Context context, String token, String title, String message) {
-        try {
-            JSONObject json = new JSONObject();
-            JSONObject data = new JSONObject();
-
-            data.put("title", title);
-            data.put("body", message);
-
-            json.put("to", token);
-            json.put("data", data);
-
-            String FCM_API_URL = "https://fcm.googleapis.com/fcm/send";
-            String SERVER_KEY = "YOUR_SERVER_KEY_HERE";  // Get from Firebase Console
-            RequestQueue requestQueue = Volley.newRequestQueue(context); // ✅ Now 'context' is passed correctly
-
-            JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, FCM_API_URL, json,
-                    response -> Log.d("FCM", "Notification sent: " + response.toString()),
-                    error -> Log.e("FCM", "Error sending notification", error)) {
-                @Override
-                public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", "key=" + SERVER_KEY);
-                    headers.put("Content-Type", "application/json");
-                    return headers;
-                }
-            };
-
-            requestQueue.add(request);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         CircleImageView imgUserImg;
         TextView txtUserName, txtPostTime, txtPostText, txtReadmore;
