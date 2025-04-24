@@ -3,6 +3,9 @@
         android:id="@+id/nav_profile"
         android:title="Profile" />
     <item
+        android:id="@+id/nav_connections"
+        android:title="Connections" />
+    <item
         android:id="@+id/nav_settings"
         android:title="Settings" />
     <item

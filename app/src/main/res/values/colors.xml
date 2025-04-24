@@ -15,9 +15,11 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <!-- Custom Tokens -->
+
     <color name="colorPrimary">@color/honolulu_blue</color>
     <color name="colorPrimaryDark">@color/royal_blue</color>
     <color name="colorAccent">@color/cerise</color>
     <color name="backgroundLight">@color/ghost_white</color>
     <color name="textPrimary">@color/eerie_black</color>
+    <color name="textSecondary">@color/grey</color>
 </resources>

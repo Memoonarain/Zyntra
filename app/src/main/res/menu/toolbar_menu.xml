@@ -8,4 +8,10 @@
         android:iconTint="@color/colorPrimary"
         android:title="Settings"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/action_Search"
+        android:icon="@drawable/search_icon"
+        android:iconTint="@color/colorPrimary"
+        android:title="Search"
+        app:showAsAction="always"/>
 </menu>

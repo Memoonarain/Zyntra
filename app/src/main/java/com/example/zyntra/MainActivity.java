@@ -3,12 +3,15 @@ package com.example.zyntra;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -95,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
+            } else if (id == R.id.nav_connections) {
+                startActivity(new Intent(MainActivity.this, ConnectionsActivity.class));
             }
 
             drawerLayout.closeDrawers();
@@ -158,6 +163,25 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_settings) {
+            startActivity(new Intent(MainActivity.this, UserProfileActivity.class));
+            return true;
+        }
+        else if (item.getItemId() == R.id.action_Search) {
+            startActivity(new Intent(MainActivity.this, ActivitySearch.class));
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void loadInitialPosts() {
@@ -229,13 +253,16 @@ public class MainActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.nav_search) {
-                startActivity(new Intent(MainActivity.this, ActivitySearch.class));
+            if (itemId == R.id.nav_messages) {
+                startActivity(new Intent(MainActivity.this, MessagesActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
             } else if (itemId == R.id.nav_newPost) {
                 startActivity(new Intent(MainActivity.this, NewPost.class));
                 overridePendingTransition(0, 0);
+                return true;
+            } else if (itemId == R.id.nav_home) {
+                // Already on home screen, do nothing
                 return true;
             } else if (itemId == R.id.nav_connections) {
                 startActivity(new Intent(MainActivity.this, ConnectionsActivity.class));

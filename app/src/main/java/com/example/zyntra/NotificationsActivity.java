@@ -64,8 +64,8 @@ public class NotificationsActivity extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
-            if (itemId == R.id.nav_search) {
-                startActivity(new Intent(NotificationsActivity.this, ActivitySearch.class));
+            if (itemId == R.id.nav_messages) {
+                startActivity(new Intent(NotificationsActivity.this, MessagesActivity.class));
                 overridePendingTransition(0, 0);
                 return true;
             }

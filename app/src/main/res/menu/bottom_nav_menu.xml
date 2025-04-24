@@ -4,9 +4,9 @@
         android:icon="@drawable/icon_home"
         android:title="Home"/>
     <item
-        android:id="@+id/nav_search"
-        android:icon="@drawable/icon_search"
-        android:title="Cart"/>
+        android:id="@+id/nav_messages"
+        android:icon="@drawable/icon_messages"
+        android:title="Messages"/>
     <item
         android:id="@+id/nav_newPost"
         android:icon="@drawable/icon_new"
@@ -14,9 +14,9 @@
     <item
         android:id="@+id/nav_connections"
         android:icon="@drawable/icon_conections"
-        android:title="Account"/>
+        android:title="Connectoins"/>
     <item
         android:id="@+id/nav_notification"
         android:icon="@drawable/icon_notification"
-        android:title="Settings"/>
+        android:title="Notification"/>
 </menu>

@@ -10,7 +10,7 @@
     android:paddingVertical="25dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/imageViewDrawer"
         android:layout_width="100dp"
         android:layout_height="100dp"
